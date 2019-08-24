@@ -22,7 +22,7 @@
     </div>
     <item-object
       v-if="this.isObject"
-      v-on:updateItemObject=""
+      v-on:itemObjectUpdated="updateItem($event)"
       v-bind:itemObject="this.dataItem">
     </item-object>
   </div>
@@ -68,12 +68,17 @@
       }
     },
     methods: {
-      updateItem() {
+      updateItem(event = null) {
+        /* Additional checks for this.newValue to exclude combined values like "12wed" or "true hero". */
         if (this.isBoolean && (this.newValue == "true" || this.newValue == "false") ) {
           this.newValue = JSON.parse(this.newValue);
         }
         if (this.isNumber && isFinite(this.newValue)) {
           this.newValue = parseInt(this.newValue);
+        }
+        if (this.isObject && event) {
+          this.newValue = event.obj;
+          this.newValue[event.key] = event.value;
         }
         this.$emit('itemUpdated', {
           basic: this.dataItem,
