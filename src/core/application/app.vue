@@ -29,8 +29,8 @@
     </nav>
 
     <div class="container px-3 py-2">
-      <empty-item v-on:addNewItem="addLocalDataItem($event)">
-      </empty-item>
+      <new-item-editor v-on:addNewItem="addLocalDataItem($event)">
+      </new-item-editor>
       <item
         v-for="(item, index) in localData"
         v-bind:key="`${JSON.stringify(item)}_${index}`"
@@ -44,13 +44,12 @@
 <script>
   import logopng from './components/nav/puppet.png';
   import Item from './components/item.vue';
-  import EmptyItem from './components/empty_item.vue';
+  import NewItemEditor from './components/new_item_editor.vue';
 
   export default {
     data() {
       return {
         logo: logopng,
-        previousKey: 0,
         currentKey: 0,
         keyInput: "",
         localKeys: [],
@@ -59,7 +58,7 @@
     },
     components: {
       item: Item,
-      emptyItem: EmptyItem
+      newItemEditor: NewItemEditor
     },
     mounted() {
       let localKeyArr = [];
@@ -75,15 +74,11 @@
       }
     },
     methods: {
-      saveCurrentData() {
-        if (this.previousKey) {
-          localStorage.setItem(this.previousKey, JSON.stringify(this.localData));
-        }
-        this.previousKey = this.currentKey;
-      },
       addLocalDataItem(event) {
-        this.localData.push(event);
-        localStorage.setItem(this.currentKey, JSON.stringify(this.localData));
+        if (this.currentKey) {
+          this.localData.push(event);
+          localStorage.setItem(this.currentKey, JSON.stringify(this.localData));
+        }
       },
       updateLocalDataItem(event) {
         let itemId = this.localData.indexOf(event.basic);
@@ -91,7 +86,6 @@
         localStorage.setItem(this.currentKey, JSON.stringify(this.localData));
       },
       addKey() {
-        this.saveCurrentData();
         this.localData = [];
         this.localKeys.push(this.keyInput);
         this.currentKey = this.keyInput;
