@@ -54,6 +54,7 @@
         keyInput: "",
         localKeys: [],
         localData: [],
+        isLocalDataArray: true
       }
     },
     components: {
@@ -71,6 +72,12 @@
     watch: {
       currentKey() {
         this.localData = JSON.parse(localStorage.getItem(this.currentKey));
+        if (Array.isArray(this.localData)) {
+          this.isLocalDataArray = true;
+        } else {
+          this.isLocalDataArray = false;
+          this.localData = [ this.localData ];
+        }
       }
     },
     methods: {
@@ -83,7 +90,15 @@
       updateLocalDataItem(event) {
         let itemId = this.localData.indexOf(event.basic);
         this.$set(this.localData, itemId, event.updated);
-        localStorage.setItem(this.currentKey, JSON.stringify(this.localData));
+        if (this.isLocalDataArray) {
+          localStorage.setItem(this.currentKey, JSON.stringify(this.localData));
+        } else {
+          this.localData = this.localData[0];
+          console.log(typeof this.localData);
+          localStorage.setItem(this.currentKey, JSON.stringify(this.localData));
+          this.localData = [ this.localData ];
+        }
+
       },
       addKey() {
         this.localData = [];

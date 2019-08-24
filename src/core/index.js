@@ -8,9 +8,14 @@ if (!localStorage.getItem('food')) {
   let f1 = ["Apple", "Cookies"];
   let f2 = ["Sword", "Potion"];
   let f3 = [{id:1, name: "Mike"}, {id:2, name: "Steve"}];
+  let f4 = "SomePassword";
+  let f5 = true;
+  let f6 = 12;
   localStorage.setItem('food', JSON.stringify(f1));
   localStorage.setItem('equip', JSON.stringify(f2));
   localStorage.setItem('users', JSON.stringify(f3));
+  localStorage.setItem('isBool', JSON.stringify(f5));
+  localStorage.setItem('numb', JSON.stringify(f6));
 }
 
 let app = new Vue({
