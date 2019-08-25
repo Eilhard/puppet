@@ -71,12 +71,14 @@
     },
     watch: {
       currentKey() {
-        this.localData = JSON.parse(localStorage.getItem(this.currentKey));
-        if (Array.isArray(this.localData)) {
-          this.isLocalDataArray = true;
-        } else {
-          this.isLocalDataArray = false;
-          this.localData = [ this.localData ];
+        if (this.currentKey) {
+          this.localData = JSON.parse(localStorage.getItem(this.currentKey));
+          if (Array.isArray(this.localData)) {
+            this.isLocalDataArray = true;
+          } else {
+            this.isLocalDataArray = false;
+            this.localData = [ this.localData ];
+          }
         }
       }
     },
@@ -85,7 +87,7 @@
         if (this.currentKey) {
           this.localData.push(event);
         } else {
-          console.log(`Error in "addLocalDataItem" key: ${this.currentKey}`);
+          alert("Please choose key or add new one");
           return
         }
         if (this.localData.length == 1) {
@@ -118,6 +120,7 @@
         localStorage.removeItem(this.currentKey);
         this.localKeys.splice(this.localKeys.indexOf(this.currentKey), 1);
         this.localData = [];
+        this.currentKey = 0;
       }
     }
   }

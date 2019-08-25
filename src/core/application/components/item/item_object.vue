@@ -4,26 +4,40 @@
       v-show="!isEditorMode"
       v-on:click="isEditorMode = !isEditorMode"
       class="btn btn-dark btn-sm btn-block font-weight-bold my-2">New pair</button>
-    <form v-show="isEditorMode" class="form-inline">
-      <div class="w-100 d-flex flex-wrap justify-content-between">
-        <div class="input-group my-2 item-obj-w">
-          <div class="input-group-prepend">
-            <span class="input-group-text font-weight-bold">Key</span>
-          </div>
-          <input v-model="newKey" type="text" class="form-control">
+
+    <div v-show="isEditorMode">
+      <div class="input-group my-2">
+        <div class="input-group-prepend">
+          <span class="input-group-text font-weight-bold">Value type</span>
         </div>
-        <div class="input-group my-2 item-obj-w">
-          <div class="input-group-prepend">
-            <span class="input-group-text font-weight-bold">Value</span>
-          </div>
-          <input v-model="newValue" type="text" class="form-control">
-          <div class="input-group-append">
-            <button v-on:click="addNewPair" class="btn btn-info" type="button">Save</button>
-            <button v-on:click="newPairCancel" class="btn btn-dark" type="button">Cancel</button>
-          </div>
-        </div>
+        <select class="custom-select" v-model="valueType">
+          <option value="string">String</option>
+          <option value="number">Number</option>
+          <option value="boolean">Boolean</option>
+        </select>
       </div>
-    </form>
+      <form class="form-inline">
+        <div class="w-100 d-flex flex-wrap justify-content-between">
+          <div class="input-group my-2 item-obj-w">
+            <div class="input-group-prepend">
+              <span class="input-group-text font-weight-bold">Key</span>
+            </div>
+            <input v-model="newKey" type="text" class="form-control">
+          </div>
+          <div class="input-group my-2 item-obj-w">
+            <div class="input-group-prepend">
+              <span class="input-group-text font-weight-bold">Value</span>
+            </div>
+            <input v-model="newValue" type="text" class="form-control">
+            <div class="input-group-append">
+              <button v-on:click="addNewPair" class="btn btn-info" type="button">Save</button>
+              <button v-on:click="newPairCancel" class="btn btn-dark" type="button">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
     <object-pair
       v-for="(key, index) in itemKeys"
       v-bind:key="`${key}_${index}`"
@@ -48,7 +62,8 @@
       return {
         isEditorMode: false,
         newKey: "",
-        newValue: ""
+        newValue: "",
+        valueType: 'string'
       }
     },
     computed: {
@@ -59,6 +74,12 @@
     methods: {
       addNewPair() {
         if (this.newKey) {
+          if (this.valueType == 'boolean' && (this.newValue == "true" || this.newValue == "false")) {
+            this.newValue = JSON.parse(this.newValue);
+          }
+          if (this.valueType == 'number' && isFinite(this.newValue)) {
+            this.newValue = parseInt(this.newValue);
+          }
           this.$emit('itemObjectUpdated',  { obj: this.itemObject, key: this.newKey, value: this.newValue } );
           this.isEditorMode = !this.isEditorMode;
         } else {

@@ -20,25 +20,37 @@
       </div>
     </form>
 
-    <form v-show="isEditorMode" class="form-inline">
-      <div class="w-100 d-flex flex-wrap justify-content-between">
-        <div class="input-group my-2 item-obj-w">
-          <div class="input-group-prepend">
-            <span class="input-group-text font-weight-bold">Key</span>
-          </div>
-          <div class="form-control">{{itemObjKey}}</div>
+    <div v-show="isEditorMode">
+      <div class="input-group my-2">
+        <div class="input-group-prepend">
+          <span class="input-group-text font-weight-bold">Value type</span>
         </div>
-        <div class="input-group my-2 item-obj-w">
-          <div class="input-group-prepend">
-            <span class="input-group-text font-weight-bold">Value</span>
-          </div>
-          <input v-model="newValue" type="text" class="form-control">
-          <div class="input-group-append">
-            <button v-on:click="updateItemObject" class="btn btn-info" type="button">Save</button>
-          </div>
-        </div>
+        <select class="custom-select" v-model="valueType">
+          <option value="string">String</option>
+          <option value="number">Number</option>
+          <option value="boolean">Boolean</option>
+        </select>
       </div>
-    </form>
+      <form class="form-inline">
+        <div class="w-100 d-flex flex-wrap justify-content-between">
+          <div class="input-group my-2 item-obj-w">
+            <div class="input-group-prepend">
+              <span class="input-group-text font-weight-bold">Key</span>
+            </div>
+            <div class="form-control">{{itemObjKey}}</div>
+          </div>
+          <div class="input-group my-2 item-obj-w">
+            <div class="input-group-prepend">
+              <span class="input-group-text font-weight-bold">Value</span>
+            </div>
+            <input v-model="newValue" type="text" class="form-control">
+            <div class="input-group-append">
+              <button v-on:click="updateItemObject" class="btn btn-info" type="button">Save</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -48,11 +60,21 @@
     data() {
       return {
         isEditorMode: false,
-        newValue: this.itemObjValue
+        newValue: this.itemObjValue,
+        valueType: 'string'
       }
     },
     methods: {
       updateItemObject() {
+        if (this.valueType == 'boolean' && (this.newValue == "true" || this.newValue == "false")) {
+          this.newValue = JSON.parse(this.newValue);
+        }
+        if (this.valueType == 'number' && isFinite(this.newValue)) {
+          this.newValue = parseInt(this.newValue);
+        }
+        if (this.valueType == 'string' && isFinite(this.newValue)) {
+          this.newValue = `${this.newValue}`;
+        }
         this.$emit('objectPairUpdated', { key: this.itemObjKey, value: this.newValue });
         this.isEditorMode = !this.isEditorMode;
       }
