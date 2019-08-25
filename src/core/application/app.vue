@@ -8,7 +8,7 @@
         </div>
         <form class="form-inline">
           <div class="input-group input-group-sm m-1">
-            <input v-model="keyInput" type="text" class="form-control">
+            <input v-model="keyInput" v-on:keydown.enter.prevent="addKey" type="text" class="form-control">
             <div class="input-group-append">
               <button v-on:click="addKey" class="btn btn-info font-weight-bold" type="button">Add key</button>
             </div>

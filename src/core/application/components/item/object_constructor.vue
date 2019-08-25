@@ -43,7 +43,8 @@
       v-bind:key="`${key}_${index}`"
       v-bind:itemObjKey="key"
       v-bind:itemObjValue="newObject[key]"
-      v-on:objectPairUpdated="newObjectUpdated($event)">
+      v-on:objectPairUpdated="newObjectUpdated($event)"
+      v-on:deletePair="itemObjectDeletePair($event)">
     </object-pair>
 
     <button
@@ -87,10 +88,15 @@
         }
       },
       addNewObject() {
-        this.$emit('addNewObject', this.newObject);
-        this.newObject = {};
-        this.newObjKey = "";
-        this.newObjValue = "";
+        let lastKeys = Object.keys(this.newObject);
+        if (lastKeys.length > 0) {
+          this.$emit('addNewObject', this.newObject);
+          this.newObject = {};
+          this.newObjKey = "";
+          this.newObjValue = "";
+        } else {
+          alert("Please add new pair key-value to object");
+        }
       },
       newObjectUpdated(event) {
         this.newObject[event.key] = event.value;
@@ -99,7 +105,10 @@
         this.newObjKey = "";
         this.newObjValue = "";
         this.isEditorMode = !this.isEditorMode
-      }
+      },
+      itemObjectDeletePair(event) {
+         this.$delete(this.newObject, event.key);
+      },
     },
     computed: {
       newObjectKeys() {
