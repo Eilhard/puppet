@@ -67,6 +67,12 @@
     },
     methods: {
       addNewItem() {
+        if (this.itemType == 'boolean' && (this.item == "true" || this.item == "false")) {
+          this.item = JSON.parse(this.item);
+        }
+        if (this.itemType == 'number' && isFinite(this.item)) {
+          this.item = parseInt(this.item);
+        }
         if (this.itemType == 'object') {
           this.item = {};
           this.item[this.newObjKey] = this.newObjValue;
