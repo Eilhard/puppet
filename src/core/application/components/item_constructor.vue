@@ -30,42 +30,34 @@
         </div>
       </div>
 
-      <form v-show="itemType == 'object'" class="form-inline">
-        <div class="w-100 d-flex flex-wrap justify-content-between">
-          <div class="input-group my-2 item-obj-w">
-            <div class="input-group-prepend">
-              <span class="input-group-text font-weight-bold">Key</span>
-            </div>
-            <input v-model="newObjKey" type="text" class="form-control">
-          </div>
-          <div class="input-group my-2 item-obj-w">
-            <div class="input-group-prepend">
-              <span class="input-group-text font-weight-bold">Value</span>
-            </div>
-            <input v-model="newObjValue" type="text" class="form-control">
-            <div class="input-group-append">
-              <button v-on:click="addNewItem" class="btn btn-outline-info" type="button">Save</button>
-              <button v-on:click="isEditorMode = !isEditorMode" class="btn btn-outline-dark" type="button">Cancel</button>
-            </div>
-          </div>
-        </div>
-      </form>
+      <object-constructor
+        v-on:addNewObject="addNewObject($event)"
+        v-show="itemType == 'object'"></object-constructor>
     </div>
   </div>
 </template>
 
 <script>
+  import ObjectConstructor from './item/object_constructor.vue';
+
   export default {
+    components: {
+      objectConstructor: ObjectConstructor
+    },
     data() {
       return {
         isEditorMode: false,
         item: "",
         itemType: "string",
-        newObjKey: "",
-        newObjValue: ""
       }
     },
     methods: {
+      addNewObject(event) {
+        this.item = event;
+        this.$emit('addNewItem', this.item);
+        this.isEditorMode = !this.isEditorMode;
+        this.item = "";
+      },
       addNewItem() {
         if (this.itemType == 'boolean' && (this.item == "true" || this.item == "false")) {
           this.item = JSON.parse(this.item);

@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
         <div class="navbar-brand">
@@ -29,8 +29,8 @@
     </nav>
 
     <div class="container px-3 py-2">
-      <new-item-editor v-on:addNewItem="addLocalDataItem($event)">
-      </new-item-editor>
+      <itemConstructor v-on:addNewItem="addLocalDataItem($event)">
+      </itemConstructor>
       <item
         v-for="(item, index) in localData"
         v-bind:key="`${JSON.stringify(item)}_${index}`"
@@ -44,7 +44,7 @@
 <script>
   import logopng from './components/nav/puppet.png';
   import Item from './components/item.vue';
-  import NewItemEditor from './components/new_item_editor.vue';
+  import ItemConstructor from './components/item_constructor.vue';
 
   export default {
     data() {
@@ -59,7 +59,7 @@
     },
     components: {
       item: Item,
-      newItemEditor: NewItemEditor
+      itemConstructor: ItemConstructor
     },
     mounted() {
       let localKeyArr = [];
@@ -84,21 +84,28 @@
       addLocalDataItem(event) {
         if (this.currentKey) {
           this.localData.push(event);
+        } else {
+          console.log(`Error in "addLocalDataItem" key: ${this.currentKey}`);
+          return
+        }
+        if (this.localData.length == 1) {
+          this.localData = this.localData[0];
+          localStorage.setItem(this.currentKey, JSON.stringify(this.localData));
+          this.localData = [ this.localData ];
+        } else {
           localStorage.setItem(this.currentKey, JSON.stringify(this.localData));
         }
       },
       updateLocalDataItem(event) {
         let itemId = this.localData.indexOf(event.basic);
         this.$set(this.localData, itemId, event.updated);
-        if (this.isLocalDataArray) {
+        if (this.isLocalDataArray && this.localData.length > 1) {
           localStorage.setItem(this.currentKey, JSON.stringify(this.localData));
         } else {
           this.localData = this.localData[0];
-          console.log(typeof this.localData);
           localStorage.setItem(this.currentKey, JSON.stringify(this.localData));
           this.localData = [ this.localData ];
         }
-
       },
       addKey() {
         this.localData = [];
