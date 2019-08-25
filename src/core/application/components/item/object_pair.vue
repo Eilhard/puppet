@@ -15,6 +15,9 @@
           <div class="form-control">{{itemObjValue}}</div>
           <div class="input-group-append">
             <button v-on:click="isEditorMode = !isEditorMode" class="btn btn-info" type="button">Edit</button>
+            <button v-on:click="deleteObjectPair" class="btn btn-danger" type="button">
+              <i class="fas fa-trash-alt"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -55,6 +58,8 @@
 </template>
 
 <script>
+  import '../../../ads/fontawesome.js';
+
   export default {
     props: [ 'itemObjKey', 'itemObjValue' ],
     data() {
@@ -77,6 +82,9 @@
         }
         this.$emit('objectPairUpdated', { key: this.itemObjKey, value: this.newValue });
         this.isEditorMode = !this.isEditorMode;
+      },
+      deleteObjectPair() {
+        this.$emit('deletePair', { key: this.itemObjKey });
       }
     }
   }

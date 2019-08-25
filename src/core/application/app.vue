@@ -35,7 +35,8 @@
         v-for="(item, index) in localData"
         v-bind:key="`${JSON.stringify(item)}_${index}`"
         v-bind:data-item="item"
-        v-on:itemUpdated="updateLocalDataItem($event)" >
+        v-on:itemUpdated="updateLocalDataItem($event)"
+        v-on:itemDeleted="deleteLocalDataItem($event)">
       </item>
     </div>
   </div>
@@ -102,6 +103,18 @@
         let itemId = this.localData.indexOf(event.basic);
         this.$set(this.localData, itemId, event.updated);
         if (this.isLocalDataArray && this.localData.length > 1) {
+          localStorage.setItem(this.currentKey, JSON.stringify(this.localData));
+        } else {
+          this.localData = this.localData[0];
+          localStorage.setItem(this.currentKey, JSON.stringify(this.localData));
+          this.localData = [ this.localData ];
+        }
+      },
+      deleteLocalDataItem(event) {
+        this.localData = this.localData.filter(item => item != event);
+        if (this.localData.length < 1) {
+          this.removeKey();
+        } else if (this.localData.length > 1) {
           localStorage.setItem(this.currentKey, JSON.stringify(this.localData));
         } else {
           this.localData = this.localData[0];

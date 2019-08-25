@@ -43,7 +43,8 @@
       v-bind:key="`${key}_${index}`"
       v-bind:itemObjKey="key"
       v-bind:itemObjValue="itemObject[key]"
-      v-on:objectPairUpdated="itemObjectUpdated($event)">
+      v-on:objectPairUpdated="itemObjectUpdated($event)"
+      v-on:deletePair="itemObjectDeletePair($event)">
     </object-pair>
   </div>
 </template>
@@ -88,6 +89,9 @@
       },
       itemObjectUpdated(event) {
         this.$emit('itemObjectUpdated',  { obj: this.itemObject, key: event.key, value: event.value } );
+      },
+      itemObjectDeletePair(event) {
+        this.$emit('itemObjectDeletePair',  { obj: this.itemObject, key: event.key } );
       },
       newPairCancel() {
         this.newKey = "";

@@ -7,7 +7,10 @@
         </div>
         <div class="form-control">{{this.dataItem}}</div>
         <div class="input-group-append">
-          <button v-on:click="isEditorMode = !isEditorMode" class="btn btn-info" type="button">Edit</button>
+          <button v-on:click="isEditorMode = !isEditorMode" class="btn btn-outline-info" type="button">Edit</button>
+          <button v-on:click="deleteItem" class="btn btn-outline-danger" type="button">
+            <i class="fas fa-trash-alt"></i>
+          </button>
         </div>
       </div>
       <div v-show="isEditorMode" class="input-group my-2">
@@ -16,19 +19,21 @@
         </div>
         <input v-model="newValue" class="form-control" type="text">
         <div class="input-group-append">
-          <button v-on:click="updateItem" class="btn btn-info" type="button">Save</button>
+          <button v-on:click="updateItem" class="btn btn-outline-info" type="button">Save</button>
         </div>
       </div>
     </div>
     <item-object
       v-if="this.isObject"
       v-on:itemObjectUpdated="updateItem($event)"
+      v-on:itemObjectDeletePair="itemDeletePair($event)"
       v-bind:itemObject="this.dataItem">
     </item-object>
   </div>
 </template>
 
 <script>
+  import '../../ads/fontawesome.js';
   import ItemObject from './item/item_object.vue';
 
   export default {
@@ -44,7 +49,6 @@
       return {
         newValue: this.dataItem,
         isEditorMode: false,
-        itemKeys: null
       }
     },
     computed: {
@@ -85,6 +89,26 @@
           updated: this.newValue,
         });
         this.isEditorMode = !this.isEditorMode;
+      },
+      deleteItem() {
+        this.$emit('itemDeleted', this.dataItem);
+      },
+      itemDeletePair(event) {
+        if (this.isObject && event) {
+          this.newValue = event.obj;
+          delete this.newValue[event.key];
+          let lastKeys = Object.keys(this.newValue);
+          if (lastKeys.length > 0) {
+            this.$emit('itemUpdated', {
+              basic: this.dataItem,
+              updated: this.newValue,
+            });
+          } else {
+            this.deleteItem();
+          }
+
+        }
+
       }
     }
   }
