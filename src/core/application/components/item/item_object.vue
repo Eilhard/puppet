@@ -19,6 +19,7 @@
           <input v-model="newValue" type="text" class="form-control">
           <div class="input-group-append">
             <button v-on:click="addNewPair" class="btn btn-info" type="button">Save</button>
+            <button v-on:click="isEditorMode = !isEditorMode" class="btn btn-dark" type="button">Cancel</button>
           </div>
         </div>
       </div>
@@ -58,18 +59,24 @@
     methods: {
       addNewPair() {
         if (this.newKey) {
-          this.itemObject[this.newKey] = this.newValue;
+          this.$emit('itemObjectUpdated',  { obj: this.itemObject, key: this.newKey, value: this.newValue } );
+          this.isEditorMode = !this.isEditorMode;
         } else {
-          console.log("Please set key");
+          alert("Please set key");
         }
       },
       itemObjectUpdated(event) {
-        this.$emit('itemObjectUpdated',  { obj: this.itemObject, key: event.key, value: event.value } )
+        this.$emit('itemObjectUpdated',  { obj: this.itemObject, key: event.key, value: event.value } );
       }
     }
   }
 </script>
 
 <style scoped>
-
+  .item-obj-w {
+    width: 49.5%;
+    @media (max-width: 650px) {
+      width: 100%;
+    }
+  }
 </style>
