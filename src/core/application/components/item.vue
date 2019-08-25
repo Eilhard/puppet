@@ -27,6 +27,7 @@
       v-if="this.isObject"
       v-on:itemObjectUpdated="updateItem($event)"
       v-on:itemObjectDeletePair="itemDeletePair($event)"
+      v-on:itemObjectDelete="deleteItem()"
       v-bind:itemObject="this.dataItem">
     </item-object>
   </div>

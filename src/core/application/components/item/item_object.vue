@@ -1,9 +1,16 @@
 <template>
   <div  class="bg-secondary p-2 my-2 rounded">
-    <button
-      v-show="!isEditorMode"
-      v-on:click="isEditorMode = !isEditorMode"
-      class="btn btn-dark btn-sm btn-block font-weight-bold my-2">New pair</button>
+    <div class="btn-group w-100">
+      <button
+        v-show="!isEditorMode"
+        v-on:click="deleteItemObject"
+        class="btn btn-dark btn-sm text-danger font-weight-bold my-2 w-50">Delete object</button>
+      <button
+        v-show="!isEditorMode"
+        v-on:click="isEditorMode = !isEditorMode"
+        class="btn btn-dark btn-sm font-weight-bold my-2 w-50">New pair</button>
+    </div>
+
 
     <div v-show="isEditorMode">
       <div class="input-group my-2">
@@ -97,6 +104,9 @@
         this.newKey = "";
         this.newValue = "";
         this.isEditorMode = !this.isEditorMode
+      },
+      deleteItemObject() {
+        this.$emit('itemObjectDelete');
       }
     }
   }
